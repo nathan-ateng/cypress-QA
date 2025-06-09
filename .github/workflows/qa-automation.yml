@@ -10,9 +10,9 @@ on:
   schedule:
     # Run at 10:00 AM EAT (which is 07:00 UTC)
     # Learn more about cron syntax: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onpushpull_requestschedule
-    - cron: '0 7 * * *'
+    - cron: "0 7 * * *"
     # Run at 11:00 PM EAT (which is 20:00 UTC)
-    - cron: '0 20 * * *'
+    - cron: "0 20 * * *"
 
   # Allow manual triggering from the GitHub Actions UI
   workflow_dispatch:
@@ -28,7 +28,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Or your preferred Node.js version (e.g., '18.x')
+          node-version: "20" # Or your preferred Node.js version (e.g., '18.x')
 
       - name: Install Dependencies
         run: npm install # Installs Cypress and other dependencies from package.json
@@ -46,7 +46,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: cypress-artifacts
-          path: cypress/screenshots
-          path: cypress/videos
+          path: |
+            cypress/screenshots
+            cypress/videos
           # If you have specific reports (e.g., mochawesome), add them here too
           # path: cypress/reports
