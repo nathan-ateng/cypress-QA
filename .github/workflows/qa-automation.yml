@@ -1,0 +1,52 @@
+name: QA Automation Tests
+
+on:
+  # Trigger when a Pull Request is merged into the 'main' branch
+  push:
+    branches:
+      - main # Or 'master', depending on your default branch name
+
+  # Schedule daily runs
+  schedule:
+    # Run at 10:00 AM EAT (which is 07:00 UTC)
+    # Learn more about cron syntax: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onpushpull_requestschedule
+    - cron: '0 7 * * *'
+    # Run at 11:00 PM EAT (which is 20:00 UTC)
+    - cron: '0 20 * * *'
+
+  # Allow manual triggering from the GitHub Actions UI
+  workflow_dispatch:
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest # You can use 'macos-latest' if your tests require a Mac environment
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4 # Action to check out your repository code
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Or your preferred Node.js version (e.g., '18.x')
+
+      - name: Install Dependencies
+        run: npm install # Installs Cypress and other dependencies from package.json
+
+      - name: Run Cypress Tests
+        run: npx cypress run # Runs all Cypress tests in headless mode
+        env:
+          # Define any environment variables your Cypress tests need
+          # For example, the base URL of your application under test (which would be your DEV/QA/Staging URL)
+          CYPRESS_BASE_URL: ${{ secrets.STAGING_APP_URL }} # Storing sensitive data in GitHub Secrets
+
+      # Optional: Upload screenshots/videos on failure
+      - name: Upload Cypress Artifacts (Screenshots, Videos)
+        if: failure() # Only run this step if the previous 'Run Cypress Tests' step failed
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-artifacts
+          path: cypress/screenshots
+          path: cypress/videos
+          # If you have specific reports (e.g., mochawesome), add them here too
+          # path: cypress/reports
