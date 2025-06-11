@@ -1,5 +1,7 @@
 // Open google
-it("Opens Google", () => {
-  cy.visit("https://www.google.com");
-  cy.url().should("include", "google.com");
+describe("Google test Suite", () => {
+  it("Opens Google", () => {
+    cy.visit("https://www.google.com");
+    cy.url().should("include", "google.com");
+  });
 });
